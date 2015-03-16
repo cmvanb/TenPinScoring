@@ -24,6 +24,7 @@ Game.prototype.bowl = function(pins)
 
     this.currentFrame.addThrow(pins);
 
+    // If we have used two (or sometimes three) throws, the frame is complete.
     if (!this.currentFrame.canAddThrow())
     {
         this.advanceFrame();
@@ -31,17 +32,14 @@ Game.prototype.bowl = function(pins)
         return;
     }
 
+    // If we got a strike, but it's not the last frame, the frame is complete.
     if (pins == _globals.maxPinsPerThrow
-        && this.currentFrame.throws.length == 1)
+        && this.currentFrame.throws.length == 1
+        && !this.currentFrame.isLastFrame())
     {
-        // Strike!
+        this.advanceFrame();
 
-        if (!this.currentFrame.isLastFrame())
-        {
-            this.advanceFrame();
-
-            return;
-        }
+        return;
     }
 };
 

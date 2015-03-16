@@ -7,15 +7,23 @@ function main()
     var newGame = new Game();
 
     // first frame
-    /*
     newGame.bowl(6);
     newGame.bowl(4);
+    /*
     */
     // inbetween frames
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
     // last frame -- valid
+    newGame.bowl(1);
+    newGame.bowl(1);
     /*
-    newGame.bowl(1);
-    newGame.bowl(1);
     */
     /*
     newGame.bowl(3);
@@ -55,6 +63,7 @@ function main()
     */
 
     // perfect game
+    /*
     newGame.bowl(10);
     newGame.bowl(10);
     newGame.bowl(10);
@@ -67,6 +76,7 @@ function main()
     newGame.bowl(10);
     newGame.bowl(10);
     newGame.bowl(10);
+    */
 
     var score = newGame.score();
 
