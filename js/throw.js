@@ -1,4 +1,4 @@
-function Throw(pins, isStrike, isSpare)
+function Throw(pins, isStrike, isSpare, isBonus)
 {
     if (pins > _globals.maxPinsPerThrow)
     {
@@ -15,9 +15,11 @@ function Throw(pins, isStrike, isSpare)
     this.pins = pins;
     this.isStrike = isStrike;
     this.isSpare = isSpare;
+    this.isBonus = isBonus;
+    this.nextThrow = null;
 };
 
-Throw.prototype.score = function()
+Throw.prototype.getScore = function()
 {
-    return pins;
+    return this.pins;
 };

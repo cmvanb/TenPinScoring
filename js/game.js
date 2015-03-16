@@ -1,5 +1,10 @@
 function Game()
 {
+    this.allFrames = null;
+    this.currentFrame = null;
+    this.previousThrow = null;
+    this.totalScore = 0;
+
     this.setup();
 };
 
@@ -22,10 +27,21 @@ Game.prototype.bowl = function(pins)
         }
     }
 
-    this.currentFrame.addThrow(pins);
+    var newThrow = this.currentFrame.addThrow(pins);
 
-    // If we have used two (or sometimes three) throws, the frame is complete.
-    if (!this.currentFrame.canAddThrow())
+    // Link throws so we can calculate the score more easily (less spaghetti code).
+    if (this.previousThrow != null)
+    {
+        this.previousThrow.nextThrow = newThrow;
+    }
+
+    this.previousThrow = newThrow;
+
+    // Update score.
+    this.updateScore();
+
+    // If we have used the maximum throws, the frame is complete.
+    if (this.currentFrame.usedMaxThrows())
     {
         this.advanceFrame();
 
@@ -57,9 +73,16 @@ Game.prototype.advanceFrame = function()
     this.currentFrame = this.currentFrame.nextFrame;
 };
 
-Game.prototype.score = function()
+Game.prototype.updateScore = function()
 {
-    return 0;
+    this.totalScore = 0;
+
+    for (var i = 0; i < this.allFrames.length; ++i)
+    {
+        this.totalScore += this.allFrames[i].updateScore();
+    }
+
+    return this.totalScore;
 };
 
 Game.prototype.setup = function()
@@ -84,4 +107,6 @@ Game.prototype.setup = function()
     }
 
     this.currentFrame = this.allFrames[0];
+    this.previousThrow = null;
+    this.totalScore = 0;
 };

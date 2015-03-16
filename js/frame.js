@@ -4,13 +4,13 @@ function Frame(number, nextFrame)
     this.throws = [];
     this.nextFrame = nextFrame;
     this.maxThrows = _globals.normalFrameMaxThrows;
-    this.score = 0;
-    this.totalScore = 0;
+    this.scoreBase = 0;
+    this.scoreBonus = 0;
 };
 
 Frame.prototype.addThrow = function(pins)
 {
-    if (!this.canAddThrow())
+    if (this.usedMaxThrows())
     {
         throw "Can't add throw; maxThrows is " + this.maxThrows + ".";
     }
@@ -20,7 +20,9 @@ Frame.prototype.addThrow = function(pins)
     var isSpare = this.throws.length > 0
         && this.throws[this.throws.length - 1].pins + pins == _globals.maxPinsPerThrow;
 
-    var newThrow = new Throw(pins, isStrike, isSpare);
+    var isBonus = this.nextThrowIsBonus();
+
+    var newThrow = new Throw(pins, isStrike, isSpare, isBonus);
 
     if (isStrike)
     {
@@ -38,29 +40,78 @@ Frame.prototype.addThrow = function(pins)
         && this.maxThrows < _globals.lastFrameMaxThrows)
     {
         ++this.maxThrows;
-        console.log("bonus throw!");
     }
 
     this.throws.push(newThrow);
+
+    return newThrow;
 };
 
-Frame.prototype.canAddThrow = function()
+Frame.prototype.updateScore = function()
 {
-    return this.throws.length < this.maxThrows;
-};
+    this.scoreBase = 0;
+    this.scoreBonus = 0;
 
-Frame.prototype.score = function()
-{
-    this.score = 0;
-    this.totalScore = 0;
-
-    for (var i = 0; i < throws.length; ++i)
+    for (var i = 0; i < this.throws.length; ++i)
     {
-        this.score += throws[i].score();
+        if (this.throws[i].isBonus)
+        {
+            continue;
+        }
+
+        this.scoreBase += this.throws[i].getScore();
+
+        if ((this.throws[i].isStrike || this.throws[i].isSpare)
+            && this.throws[i].nextThrow != null)
+        {
+            this.scoreBonus += this.throws[i].nextThrow.getScore();
+        }
+
+        if (this.throws[i].isStrike
+            && this.throws[i].nextThrow != null
+            && this.throws[i].nextThrow.nextThrow != null)
+        {
+            this.scoreBonus += this.throws[i].nextThrow.nextThrow.getScore();
+        }
     }
+
+    return this.scoreBase + this.scoreBonus;
+};
+
+Frame.prototype.usedMaxThrows = function()
+{
+    return this.throws.length >= this.maxThrows;
 };
 
 Frame.prototype.isLastFrame = function()
 {
     return this.nextFrame == null;
+};
+
+Frame.prototype.nextThrowIsBonus = function()
+{
+    var isBonus = false;
+
+    if (this.isLastFrame())
+    {
+        var twoThrowsBackWasAStrike = this.throws.length >= 2
+            && this.throws[this.throws.length - 2].isStrike;
+
+        var oneThrowBackWasAStrike = this.throws.length >= 1
+            && this.throws[this.throws.length - 1].isStrike;
+
+        var oneThrowBackWasASpare = this.throws.length >= 1
+            && this.throws[this.throws.length - 1].isSpare;
+
+        isBonus = twoThrowsBackWasAStrike
+            || oneThrowBackWasAStrike
+            || oneThrowBackWasASpare;
+
+        if (isBonus)
+        {
+            console.log("bonus throw!");
+        }
+    }
+
+    return isBonus;
 };

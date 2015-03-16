@@ -7,23 +7,25 @@ function main()
     var newGame = new Game();
 
     // first frame
+    /*
     newGame.bowl(6);
     newGame.bowl(4);
-    /*
     */
     // inbetween frames
-    newGame.bowl(10);
-    newGame.bowl(10);
-    newGame.bowl(10);
-    newGame.bowl(10);
-    newGame.bowl(10);
-    newGame.bowl(10);
-    newGame.bowl(10);
-    newGame.bowl(10);
-    // last frame -- valid
-    newGame.bowl(1);
-    newGame.bowl(1);
     /*
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    */
+    // last frame -- valid
+    /*
+    newGame.bowl(1);
+    newGame.bowl(1);
     */
     /*
     newGame.bowl(3);
@@ -78,7 +80,28 @@ function main()
     newGame.bowl(10);
     */
 
-    var score = newGame.score();
+    // sample game 1
+    newGame.bowl(10);
+    newGame.bowl(7);
+    newGame.bowl(3);
+    newGame.bowl(7);
+    newGame.bowl(2);
+    newGame.bowl(9);
+    newGame.bowl(1);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(10);
+    newGame.bowl(2);
+    newGame.bowl(3);
+    newGame.bowl(6);
+    newGame.bowl(4);
+    newGame.bowl(10);
+    newGame.bowl(3);
+    newGame.bowl(3);
+    /*
+    */
+
+    var score = newGame.updateScore();
 
     console.log(newGame.allFrames);
 
