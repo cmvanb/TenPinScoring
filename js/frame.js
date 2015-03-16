@@ -20,7 +20,7 @@ Frame.prototype.addThrow = function(pins)
     var isSpare = this.throws.length > 0
         && this.throws[this.throws.length - 1].pins + pins == _globals.maxPinsPerThrow;
 
-    var isBonus = this.nextThrowIsBonus();
+    var isBonus = this.isNextThrowBonus();
 
     var newThrow = new Throw(pins, isStrike, isSpare, isBonus);
 
@@ -88,7 +88,7 @@ Frame.prototype.isLastFrame = function()
     return this.nextFrame == null;
 };
 
-Frame.prototype.nextThrowIsBonus = function()
+Frame.prototype.isNextThrowBonus = function()
 {
     var isBonus = false;
 
