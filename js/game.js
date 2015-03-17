@@ -1,109 +1,75 @@
 function Game()
 {
-    this.allFrames = null;
-    this.currentFrame = null;
-    this.previousThrow = null;
-    this.totalScore = 0;
+    this.frameSets = [];
+    this.frameIndex = 0;
+    this.playerIndex = 0;
+    this.gameStarted = false;
+    this.gameOver = false;
+};
 
-    this.setup();
+Game.prototype.addPlayer = function(playerName)
+{
+    if (this.gameStarted)
+    {
+        throw "Can't add more players after game started.";
+    }
+
+    var newFrameSet = new FrameSet(playerName);
+
+    this.frameSets.push(newFrameSet);
 };
 
 Game.prototype.bowl = function(pins)
 {
-    console.log("bowling " + pins + ", frame " + this.currentFrame.number)
-
-    // Validate throw by comparing with previous throw.
-    if (this.currentFrame.throws.length > 0)
+    if (this.gameOver)
     {
-        if (!this.previousThrow.isStrike
-            && !this.previousThrow.isSpare
-            && this.previousThrow.pins + pins > _globals.maxPinsPerThrow)
+        throw "Can't bowl, game is over.";
+    }
+
+    if (!this.gameStarted)
+    {
+        this.gameStarted = true;
+
+        console.log("game started!");
+    }
+
+    var frameSet = this.frameSets[this.playerIndex];
+
+    frameSet.bowl(this.frameIndex, pins);
+
+    if (frameSet.getFrame(this.frameIndex).completed)
+    {
+        this.advanceGame();
+    }
+};
+
+Game.prototype.advanceGame = function()
+{
+    // Last player? Goto next frame.
+    if (this.playerIndex == this.numberOfPlayers() - 1)
+    {
+        // Last frame? Game is over!
+        if (this.frameIndex == _globals.framesPerGame - 1)
         {
-            throw "Throw can't have " + pins + " pins; maxPinsPerThrow is "
-                + _globals.maxPinsPerThrow + " and previousThrow has "
-                + this.previousThrow.pins + " pins.";
-        }
-    }
+            console.log("game over!");
 
-    var newThrow = this.currentFrame.addThrow(pins);
+            this.gameOver = true;
 
-    // Link throws so we can calculate the score more easily (less spaghetti code).
-    if (this.previousThrow != null)
-    {
-        this.previousThrow.nextThrow = newThrow;
-    }
-
-    this.previousThrow = newThrow;
-
-    // Update score.
-    this.updateScore();
-
-    // If we have used the maximum throws, the frame is complete.
-    if (this.currentFrame.usedMaxThrows())
-    {
-        this.advanceFrame();
-
-        return;
-    }
-
-    // If we got a strike and it's not the last frame, the frame is complete.
-    if (newThrow.isStrike
-        && !this.currentFrame.isLastFrame())
-    {
-        this.advanceFrame();
-
-        return;
-    }
-};
-
-Game.prototype.advanceFrame = function()
-{
-    if (this.currentFrame.nextFrame == null)
-    {
-        console.log("game over!");
-
-        return;
-    }
-
-    console.log("next frame!");
-
-    this.currentFrame = this.currentFrame.nextFrame;
-};
-
-Game.prototype.updateScore = function()
-{
-    this.totalScore = 0;
-
-    for (var i = 0; i < this.allFrames.length; ++i)
-    {
-        this.totalScore += this.allFrames[i].updateScore();
-    }
-
-    return this.totalScore;
-};
-
-Game.prototype.setup = function()
-{
-    this.allFrames = [];
-
-    for (var i = 0; i < _globals.framesPerGame; ++i)
-    {
-        var number = _globals.framesPerGame - i;
-        var nextFrame = null;
-
-        if (this.allFrames.length > 0)
-        {
-            nextFrame = this.allFrames[0];
+            return;
         }
 
-        var newFrame = new Frame(number, nextFrame);
-
-        // unshift() inserts frames at start of list so we can build a linked
-        // list while assigning nextFrame.
-        this.allFrames.unshift(newFrame);
+        ++this.frameIndex;
     }
 
-    this.currentFrame = this.allFrames[0];
-    this.previousThrow = null;
-    this.totalScore = 0;
+    ++this.playerIndex;
+
+    if (this.playerIndex > this.numberOfPlayers() - 1)
+    {
+        this.playerIndex = 0;
+    }
+};
+
+Game.prototype.numberOfPlayers = function()
+{
+    return this.frameSets.length;
 };

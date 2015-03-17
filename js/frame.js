@@ -1,11 +1,20 @@
-function Frame(number, nextFrame)
+function Frame(isLastFrame)
 {
-    this.number = number;
     this.throws = [];
-    this.nextFrame = nextFrame;
+    this.isLastFrame = isLastFrame;
     this.maxThrows = _globals.normalFrameMaxThrows;
-    this.scoreBase = 0;
-    this.scoreBonus = 0;
+    this.score = 0;
+    this.completed = false;
+};
+
+Frame.prototype.getLastThrow = function()
+{
+    if (this.throws.length == 0)
+    {
+        return null;
+    }
+
+    return this.throws[this.throws.length - 1];
 };
 
 Frame.prototype.addThrow = function(pins)
@@ -15,42 +24,45 @@ Frame.prototype.addThrow = function(pins)
         throw "Can't add throw; maxThrows is " + this.maxThrows + ".";
     }
 
-    var isStrike = pins == _globals.maxPinsPerThrow;
+    var isStrike = this.throwIsStrike(pins);
 
-    var isSpare = this.throws.length > 0
-        && this.throws[this.throws.length - 1].pins + pins == _globals.maxPinsPerThrow;
+    var isSpare = this.throwIsSpare(pins);
 
-    var isBonus = this.isNextThrowBonus();
+    var isBonus = this.throwIsBonus();
 
     var newThrow = new Throw(pins, isStrike, isSpare, isBonus);
 
-    if (isStrike)
-    {
-        console.log("strike!");
-    }
-
-    if (isSpare)
-    {
-        console.log("spare!");
-    }
-
     // Player can be awarded an extra throw on the last frame.
     if ((isStrike || isSpare)
-        && this.isLastFrame()
+        && this.isLastFrame
         && this.maxThrows < _globals.lastFrameMaxThrows)
     {
         ++this.maxThrows;
     }
 
     this.throws.push(newThrow);
-
-    return newThrow;
 };
 
-Frame.prototype.updateScore = function()
+Frame.prototype.checkCompleted = function()
 {
-    this.scoreBase = 0;
-    this.scoreBonus = 0;
+    // If we have used the maximum throws, the frame is complete.
+    if (this.usedMaxThrows())
+    {
+        this.completed = true;
+    }
+    // If we got a strike and it's not the last frame, the frame is complete.
+    else if (this.throws.length > 0
+        && this.getLastThrow().isStrike
+        && !this.isLastFrame)
+    {
+        this.completed = true;
+    }
+};
+
+Frame.prototype.calculateScore = function()
+{
+    var scoreBase = 0;
+    var scoreBonus = 0;
 
     for (var i = 0; i < this.throws.length; ++i)
     {
@@ -59,23 +71,25 @@ Frame.prototype.updateScore = function()
             continue;
         }
 
-        this.scoreBase += this.throws[i].getScore();
+        scoreBase += this.throws[i].getScore();
 
         if ((this.throws[i].isStrike || this.throws[i].isSpare)
             && this.throws[i].nextThrow != null)
         {
-            this.scoreBonus += this.throws[i].nextThrow.getScore();
+            scoreBonus += this.throws[i].nextThrow.getScore();
         }
 
         if (this.throws[i].isStrike
             && this.throws[i].nextThrow != null
             && this.throws[i].nextThrow.nextThrow != null)
         {
-            this.scoreBonus += this.throws[i].nextThrow.nextThrow.getScore();
+            scoreBonus += this.throws[i].nextThrow.nextThrow.getScore();
         }
     }
 
-    return this.scoreBase + this.scoreBonus;
+    this.score = scoreBase + scoreBonus;
+
+    return this.score;
 };
 
 Frame.prototype.usedMaxThrows = function()
@@ -83,35 +97,67 @@ Frame.prototype.usedMaxThrows = function()
     return this.throws.length >= this.maxThrows;
 };
 
-Frame.prototype.isLastFrame = function()
+Frame.prototype.throwIsStrike = function(pins)
 {
-    return this.nextFrame == null;
-};
-
-Frame.prototype.isNextThrowBonus = function()
-{
-    var isBonus = false;
-
-    if (this.isLastFrame())
+    if (pins == _globals.maxPinsPerThrow)
     {
-        var twoThrowsBackWasAStrike = this.throws.length >= 2
-            && this.throws[this.throws.length - 2].isStrike;
-
-        var oneThrowBackWasAStrike = this.throws.length >= 1
-            && this.throws[this.throws.length - 1].isStrike;
-
-        var oneThrowBackWasASpare = this.throws.length >= 1
-            && this.throws[this.throws.length - 1].isSpare;
-
-        isBonus = twoThrowsBackWasAStrike
-            || oneThrowBackWasAStrike
-            || oneThrowBackWasASpare;
-
-        if (isBonus)
+        if (this.isLastFrame)
         {
-            console.log("bonus throw!");
+            if (this.throws.length == 0)
+            {
+                return true;
+            }
+            else if (this.throws.length > 0
+                && this.getLastThrow().pins == _globals.maxPinsPerThrow)
+            {
+                return true;
+            }
+        }
+        else if (this.throws.length == 0)
+        {
+            return true;
         }
     }
 
-    return isBonus;
+    return false;
+};
+
+Frame.prototype.throwIsSpare = function(pins)
+{
+    if (this.throws.length > 0
+        && this.getLastThrow().pins + pins == _globals.maxPinsPerThrow)
+    {
+        return true;
+    }
+
+    return false;
+};
+
+Frame.prototype.throwIsBonus = function()
+{
+    if (this.isLastFrame)
+    {
+        // Two throws back was a strike, so yes.
+        if (this.throws.length >= 2
+            && this.throws[this.throws.length - 2].isStrike)
+        {
+            return true;
+        }
+
+        // One throw back was a strike, so yes.
+        if (this.throws.length >= 1
+            && this.getLastThrow().isStrike)
+        {
+            return true;
+        }
+
+        // One throw back was a spare, so yes.
+        if (this.throws.length >= 1
+            && this.getLastThrow().isSpare)
+        {
+            return true;
+        }
+    }
+
+    return false;
 };
