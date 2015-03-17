@@ -2,6 +2,8 @@ function FrameSet(playerName)
 {
     this.playerName = playerName;
     this.frames = [];
+    this.totalScore = 0;
+    this.previousThrow = null;
 
     // Populate array.
     for (var i = 0; i < _globals.framesPerGame; ++i)
@@ -11,9 +13,6 @@ function FrameSet(playerName)
 
         this.frames.push(newFrame);
     }
-
-    this.totalScore = 0;
-    this.previousThrow = null;
 };
 
 FrameSet.prototype.bowl = function(frameIndex, pins)
