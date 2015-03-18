@@ -12,85 +12,32 @@ function main()
     game.addPlayer("Calvin");
     game.addPlayer("Hobbes");
 
-    // perfect game
-    /*
-    for (var p = 0; p < game.numberOfPlayers(); ++p)
-    {
-        for (var f = 0; f < 12; ++f)
-        {
-            game.bowl(10);
-        }
-    }
-    */
+    var perfectGameData = [
+        10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+        10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+        10, 10, 10, 10];
 
-    // random game
-    /*
+    var sampleGameData = [
+        9, 1, 3, 7, 3, 7, 10, 10, 2, 1, 
+        6, 4, 2, 3, 10, 10, 10, 10, 10, 2, 
+        1, 10, 3, 6, 4, 3, 7, 3, 1, 3, 7, 2];
+
+    autoplayInterval(game, sampleGameData);
+};
+
+function autoplayInstant(game, gameData)
+{
     while (!game.gameOver)
     {
-        var pIndex = game.playerIndex;
-
-        var pins1 = getRandomInt(8, 11);
-
-        game.bowl(pins1);
-
-        if (pIndex != game.playerIndex)
-        {
-            continue;
-        }
-
-        if (!game.gameOver
-            && pins1 < 10)
-        {
-            var pins2 = getRandomInt(1, 11 - pins1);
-
-            game.bowl(pins2);
-        }
+        game.bowl(gameData.shift());
     }
-    */
+};
 
-    // sample game 1
-    /*
-    game.bowl(9);
-    game.bowl(1);
-    game.bowl(3);
-    game.bowl(7);
-    game.bowl(3);
-    game.bowl(7);
-    game.bowl(10);
-    game.bowl(10);
-    game.bowl(2);
-    game.bowl(1);
-    game.bowl(6);
-    game.bowl(4);
-    game.bowl(2);
-    game.bowl(3);
-    game.bowl(10);
-    game.bowl(10);
-    game.bowl(10);
-    game.bowl(10);
-    game.bowl(10);
-    game.bowl(2);
-    game.bowl(1);
-    game.bowl(10);
-    game.bowl(3);
-    game.bowl(6);
-    game.bowl(4);
-    game.bowl(3);
-    game.bowl(7);
-    game.bowl(3);
-    game.bowl(1);
-    game.bowl(3);
-    game.bowl(7);
-    game.bowl(2);
-    */
-
-    //console.log(game.frameSets);
-
-    // automatic game
-    /*
-    function autoplay()
+function autoplayInterval(game, gameData)
+{
+    function next()
     {
-        game.bowl(10);
+        game.bowl(gameData.shift());
 
         if (game.gameOver)
         {
@@ -98,8 +45,7 @@ function main()
         }
     }
 
-    var interval = window.setInterval(autoplay, 1000);
-    */
+    var interval = window.setInterval(next, 500);
 };
 
 main();

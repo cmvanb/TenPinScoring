@@ -20,7 +20,7 @@ ScoreCard.prototype.clearTable = function()
 
 ScoreCard.prototype.addRows = function(game)
 {
-    var rowCount = game.frameSets.length;
+    var rowCount = game.frameSets.length + 1;
     var columnCount = _globals.framesPerGame + 1;
 
     while (this.tableElement.rows.length < rowCount)
@@ -36,28 +36,41 @@ ScoreCard.prototype.addRows = function(game)
 
 ScoreCard.prototype.fillRows = function(game)
 {
-    var rowCount = game.numberOfPlayers();
+    var rowCount = game.frameSets.length + 1;
     var columnCount = _globals.framesPerGame + 1;
     var playerNames = game.getPlayerNames();
 
     for (var r = 0; r < rowCount; ++r)
     {
         var row = this.tableElement.rows[r];
-        var frameSet = game.frameSets[r];
 
-        for (var c = 0; c < columnCount; ++c)
+        if (r == 0)
         {
-            var cell = row.cells[c];
-
-            if (c == 0)
+            for (var c = 1; c < columnCount; ++c)
             {
-                cell.innerHTML = playerNames[r];
+                var cell = row.cells[c];
+
+                cell.innerHTML = c;
             }
-            else if (c > 0)
-            {
-                var frame = frameSet.frames[c - 1];
+        }
+        else
+        {
+            var frameSet = game.frameSets[r - 1];
 
-                cell.innerHTML = frame.score;
+            for (var c = 0; c < columnCount; ++c)
+            {
+                var cell = row.cells[c];
+
+                if (c == 0)
+                {
+                    cell.innerHTML = playerNames[r - 1];
+                }
+                else if (c > 0)
+                {
+                    var frame = frameSet.frames[c - 1];
+
+                    cell.innerHTML = getScoreStringFromFrame(frame);
+                }
             }
         }
     }
