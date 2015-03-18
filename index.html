@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Ten Pin Scoring</title>
     <script src="js/globals.js"></script>
-    <script src="js/game.js"></script>
     <script src="js/scorecard.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
     <script src="js/frameset.js"></script>
     <script src="js/frame.js"></script>
     <script src="js/throw.js"></script>
@@ -19,6 +20,10 @@
     th, td
     {
         padding: 15px;
+    }
+    .hint
+    {
+        color: #ff0000;
     }
     </style>
 </head>
@@ -39,6 +44,10 @@
             <td></td>
         </tr>
     </table>
+    <h3 id="turnindicator">Input</h3>
+    <p>Enter the amount of pins to bowl and press the return key.</p>
+    <input type="text" id="inputfield"/>
+    <p id="hint" class="hint"></p>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -23,6 +23,8 @@ Game.prototype.addPlayer = function(playerName)
     this.onAddPlayerCallback(this);
 };
 
+//Game.prototype.onAddPlayer = null;
+
 Game.prototype.bowl = function(pins)
 {
     if (this.gameOver)
@@ -53,6 +55,8 @@ Game.prototype.bowl = function(pins)
 
     this.onBowlCallback(this);
 };
+
+//Game.prototype.onBowl = null;
 
 Game.prototype.advanceGame = function()
 {

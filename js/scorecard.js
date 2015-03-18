@@ -3,7 +3,7 @@ function ScoreCard(tableElement)
     this.tableElement = tableElement;
 };
 
-ScoreCard.prototype.updateTable = function(game)
+ScoreCard.prototype.update = function(game)
 {
     this.clearTable();
     this.addRows(game);
@@ -69,9 +69,45 @@ ScoreCard.prototype.fillRows = function(game)
                 {
                     var frame = frameSet.frames[c - 1];
 
-                    cell.innerHTML = getScoreStringFromFrame(frame);
+                    cell.innerHTML = this.getScoreStringFromFrame(frame);
                 }
             }
         }
     }
+};
+
+ScoreCard.prototype.getScoreStringFromFrame = function(frame)
+{
+    if (frame.throws.length > 0)
+    {
+        var string = "";
+
+        for (var i = 0; i < frame.throws.length; ++i)
+        {
+            if (i > 0)
+            {
+                string += " ";
+            }
+
+            string += this.getScoreStringFromThrow(frame.throws[i]);
+        }
+
+        return string;
+    }
+
+    return "";
+};
+
+ScoreCard.prototype.getScoreStringFromThrow = function(_throw)
+{
+    if (_throw.isStrike)
+    {
+        return "X";
+    }
+    if (_throw.isSpare)
+    {
+        return "/";
+    }
+
+    return _throw.pins;
 };
