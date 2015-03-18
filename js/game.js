@@ -1,3 +1,18 @@
+/*
+    Game class
+
+    Game is responsible for maintaining the game state. The game state is mostly
+    contained in the frameSets array. Game modifies the game state in response
+    to the application (main.js).
+
+    There are two crucial functions in this class:
+
+        addPlayer(string playerName)
+        bowl(int pins)
+
+    The rest is supporting code, most of which could probably be refactored out.
+*/
+
 function Game()
 {
     this.frameSets = [];
@@ -134,24 +149,23 @@ Game.prototype.getGameOverMessage = function()
         throw "Game is not over.";
     }
 
-    function compare(a, b)
-    {
-        if (a.totalScore < b.totalScore)
-        {
-            return -1;
-        }
-
-        if (a.totalScore > b.totalScore)
-        {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    this.frameSets.sort(compare).reverse();
-
     console.log(this.frameSets);
+
+    this.frameSets.sort(
+        function(a, b)
+        {
+            if (a.totalScore < b.totalScore)
+            {
+                return -1;
+            }
+
+            if (a.totalScore > b.totalScore)
+            {
+                return 1;
+            }
+
+            return 0;
+        }).reverse();
 
     // There can be multiple winners in the case of a tied score.
     var winners = [];

@@ -1,5 +1,19 @@
-function UserInteraction(pregameDiv, ingameDiv, endgameDiv, tableElement, turnElement,
-	inputPinsElement, hintElement, gameOverElement)
+/*
+    UserInteraction class
+
+    The UI class was intended as a centralized point in the code for user
+	interacting code. Unfortunately it does not have complete dominion over this
+	code, as several button callbacks are defined in main. The disadvantages of
+	speed-coding are clearly visible here - if I could redesign this I would
+	probably try an MVC model for the user interface.
+
+	Important functions:
+
+		update(Game game)
+*/
+
+function UserInteraction(pregameDiv, ingameDiv, endgameDiv, tableElement,
+	turnElement, inputPinsElement, hintElement, gameOverElement)
 {
 	this.pregameDiv = pregameDiv;
 	this.ingameDiv = ingameDiv;

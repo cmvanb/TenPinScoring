@@ -1,3 +1,22 @@
+/*
+    Frame class
+
+    A frame represents a single 'turn' in a bowling game. It contains an array
+    of throws that have been performed and the logic for adding throws. Due to
+    the nature of bowling, there are a number of exceptions and edge cases
+    which are mostly handled here. For example, in the tenth frame a bowler may
+    sometimes bowl 'bonus balls'.
+
+    Important functions:
+
+        addThrow(int pins)
+        checkCompleted()
+        calculateScore()
+
+    Frame is also the home of several frame-related utility functions. In a
+    larger application these might be refactored out.
+*/
+
 function Frame(isLastFrame)
 {
     this.throws = [];

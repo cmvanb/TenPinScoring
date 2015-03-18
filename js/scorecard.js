@@ -1,3 +1,15 @@
+/*
+    ScoreCard class
+
+    This class is responsible for updating the HTML that represents the bowling
+    score card.
+
+    Important functions:
+
+        update(Game game)
+        fillRows(Game game)
+*/
+
 function ScoreCard(tableElement)
 {
     this.tableElement = tableElement;

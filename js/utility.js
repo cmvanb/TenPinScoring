@@ -1,3 +1,9 @@
+/*
+    Utility functions
+
+    A few simple functions I re-used from another project.
+*/
+
 // Returns a random number between 0 (inclusive) and 1 (exclusive)
 function getRandom()
 {

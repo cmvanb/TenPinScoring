@@ -1,3 +1,13 @@
+/*
+    Application main entry point
+
+    The main function serves as the entry point for our application. It looks up
+    the HTML elements the game will manipulate, constructs instances of the
+    UserInteraction and Game classes and links these instances via callbacks and
+    C# event style functions. Finally it sets the starting state for the
+    interface.
+*/
+
 var _globals = new Globals();
 
 function main()

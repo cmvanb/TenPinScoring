@@ -1,3 +1,16 @@
+/*
+    FrameSet class
+
+    A frame set represents a set of frames (frame is the bowling term for a
+    'turn') and is associated with the player who played those frames. It also
+    maintains a running total score.
+
+    Important functions:
+
+        bowl(int frameIndex, int pins)
+        calculateScore()
+*/
+
 function FrameSet(playerName)
 {
     this.playerName = playerName;
