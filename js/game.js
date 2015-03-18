@@ -18,6 +18,8 @@ Game.prototype.addPlayer = function(playerName)
 
     this.frameSets.push(newFrameSet);
 
+    console.log("added player: " + playerName);
+
     this.onAddPlayer(this);
 };
 
