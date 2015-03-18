@@ -56,6 +56,7 @@ ScoreCard.prototype.fillRows = function(game)
         else
         {
             var frameSet = game.frameSets[r - 1];
+            var runningTotal = 0;
 
             for (var c = 0; c < columnCount; ++c)
             {
@@ -69,7 +70,12 @@ ScoreCard.prototype.fillRows = function(game)
                 {
                     var frame = frameSet.frames[c - 1];
 
-                    cell.innerHTML = this.getScoreStringFromFrame(frame);
+                    if (frame.throws.length > 0)
+                    {
+                        runningTotal += frame.score;
+
+                        cell.innerHTML = this.getScoreStringFromFrame(frame) + "<br><br>" + runningTotal;
+                    }
                 }
             }
         }
