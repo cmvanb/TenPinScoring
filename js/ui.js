@@ -1,5 +1,10 @@
-function UserInteraction(tableElement, turnElement, inputElement, hintElement, gameOverElement)
+function UserInteraction(pregameDiv, ingameDiv, endgameDiv, tableElement, turnElement, 
+	inputElement, hintElement, gameOverElement)
 {
+	this.pregameDiv = pregameDiv;
+	this.ingameDiv = ingameDiv;
+	this.endgameDiv = endgameDiv;
+
     this.scoreCard = new ScoreCard(tableElement);
 
 	this.turnElement = turnElement;
@@ -34,13 +39,9 @@ UserInteraction.prototype.update = function(game)
 
 	if (game.gameOver)
 	{
-		// Hide unnecessary elements.
-		this.turnElement.style.display = "none";
-		this.inputElement.style.display = "none";
-		this.hintElement.style.display = "none";
-
-		// Display game over message.
+		this.setIngameElementsVisible(false);		
 		this.gameOverElement.innerHTML = game.getGameOverMessage();
+		this.setEndgameElementsVisible(true);
 	}
 	else
 	{
@@ -66,3 +67,24 @@ UserInteraction.prototype.parseInput = function(input)
 };
 
 UserInteraction.prototype.onParsedInput = null;
+
+UserInteraction.prototype.setPregameElementsVisible = function(visible)
+{
+	var display = visible ? "block" : "none";
+
+	this.pregameDiv.style.display = display;
+};
+
+UserInteraction.prototype.setIngameElementsVisible = function(visible)
+{
+	var display = visible ? "block" : "none";
+	
+	this.ingameDiv.style.display = display;
+};
+
+UserInteraction.prototype.setEndgameElementsVisible = function(visible)
+{
+	var display = visible ? "block" : "none";
+	
+	this.endgameDiv.style.display = display;
+};

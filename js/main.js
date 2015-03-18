@@ -2,13 +2,24 @@ var _globals = new Globals();
 
 function main()
 {
+    var pregameDiv = document.getElementById("pregame");
+    var addPlayerButtonElement = document.getElementById("addplayerbutton");
+    var startButtonEvent = document.getElementById("startbutton");
+    var ingameDiv = document.getElementById("ingame");
     var tableElement = document.getElementById("scorecard");
     var turnElement = document.getElementById("turnindicator");
     var inputElement = document.getElementById("inputfield");
     var hintElement = document.getElementById("hint");
+    var endgameDiv = document.getElementById("endgame");
     var gameOverElement = document.getElementById("gameover");
 
-    var userInteraction = new UserInteraction(tableElement, turnElement, inputElement, hintElement, gameOverElement);
+    var userInteraction = new UserInteraction(pregameDiv, ingameDiv, endgameDiv, tableElement, 
+        turnElement, inputElement, hintElement, gameOverElement);
+
+    userInteraction.setPregameElementsVisible(false);
+    userInteraction.setIngameElementsVisible(false);
+    userInteraction.setEndgameElementsVisible(false);
+
     var game = new Game();
 
     // Assign callback functions.
@@ -33,12 +44,20 @@ function main()
             hintElement.innerHTML = errorMessage;
         }
     }
+    addPlayerButtonElement.onclick = function()
+    {
+        game.addPlayer("kaboom");
+    }
+
+    gotoPregame(userInteraction);
 
     // TODO: allow user to add/remove players
 
-    game.addPlayer("Calvin");
-    game.addPlayer("Hobbes");
+    //game.addPlayer("Calvin");
+    //game.addPlayer("Hobbes");
 
+    // Test data/code
+    /*
     var perfectGameData = [
         10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
@@ -55,9 +74,26 @@ function main()
         10, 10];
 
     autoplayInterval(game, perfectGameData);
-    /*
     */
 };
+
+function gotoPregame(userInteraction)
+{
+    userInteraction.setPregameElementsVisible(true);
+    //instructionsElement.innerHTML = "Use the button to add players.";
+}
+
+function gotoIngame()
+{
+    userInteraction.setPregameElementsVisible(false);
+    userInteraction.setIngameElementsVisible(true);
+}
+
+function gotoEndgame()
+{
+    userInteraction.setIngameElementsVisible(false);
+    userInteraction.setEndgameElementsVisible(true);
+}
 
 function autoplayInstant(game, gameData)
 {
