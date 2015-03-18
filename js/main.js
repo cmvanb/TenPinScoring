@@ -4,34 +4,28 @@ function main()
 {
     var tableElement = document.getElementById("scorecard");
     var turnElement = document.getElementById("turnindicator");
-    var inputFieldElement = document.getElementById("inputfield");
+    var inputElement = document.getElementById("inputfield");
     var hintElement = document.getElementById("hint");
 
-    var scoreCard = new ScoreCard(tableElement);
-    var userInteraction = new UserInteraction(turnElement, inputFieldElement, hintElement);
+    var userInteraction = new UserInteraction(tableElement, turnElement, inputElement, hintElement);
+    var game = new Game();
 
-    var game = new Game(
-        function(game) 
-        { 
-            scoreCard.update(game); 
-            userInteraction.update(game);
-        },
-        function(game) 
-        { 
-            scoreCard.update(game); 
-            userInteraction.update(game);
-        });
-
+    // Assign callback functions.
+    game.onAddPlayer = function(game) 
+    { 
+        userInteraction.update(game);
+    }
+    game.onBowl = function(game) 
+    { 
+        userInteraction.update(game);
+    }
     userInteraction.onReceivedValidInput = function(input)
     {
         game.bowl(input);
     }
 
-    /*
-    var inputEvent = document.createEvent("Event");
-    inputEvent.initEvent("onReceivedValidInput")
-    userInteraction.onReceivedValidInput += game.bowl;
-    */
+    // TODO: allow user to add/remove players
+
     game.addPlayer("Calvin");
     game.addPlayer("Hobbes");
 

@@ -1,12 +1,10 @@
-function Game(onAddPlayerCallback, onBowlCallback)
+function Game()
 {
     this.frameSets = [];
     this.frameIndex = 0;
     this.playerIndex = 0;
     this.gameStarted = false;
     this.gameOver = false;
-    this.onAddPlayerCallback = onAddPlayerCallback;
-    this.onBowlCallback = onBowlCallback;
 };
 
 Game.prototype.addPlayer = function(playerName)
@@ -20,10 +18,10 @@ Game.prototype.addPlayer = function(playerName)
 
     this.frameSets.push(newFrameSet);
 
-    this.onAddPlayerCallback(this);
+    this.onAddPlayer(this);
 };
 
-//Game.prototype.onAddPlayer = null;
+Game.prototype.onAddPlayer = null;
 
 Game.prototype.bowl = function(pins)
 {
@@ -53,10 +51,10 @@ Game.prototype.bowl = function(pins)
         this.advanceGame();
     }
 
-    this.onBowlCallback(this);
+    this.onBowl(this);
 };
 
-//Game.prototype.onBowl = null;
+Game.prototype.onBowl = null;
 
 Game.prototype.advanceGame = function()
 {

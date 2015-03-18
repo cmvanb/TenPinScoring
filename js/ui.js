@@ -1,12 +1,14 @@
-function UserInteraction(turnElement, inputFieldElement, hintElement)
+function UserInteraction(tableElement, turnElement, inputElement, hintElement)
 {
+    this.scoreCard = new ScoreCard(tableElement);
+
 	this.turnElement = turnElement;
-	this.inputFieldElement = inputFieldElement;
+	this.inputElement = inputElement;
 	this.hintElement = hintElement;
 
 	var _this = this;
 
-	this.inputFieldElement.onkeypress = function(e)
+	this.inputElement.onkeypress = function(e)
 	{
 		if (!e)
 		{
@@ -27,6 +29,8 @@ function UserInteraction(turnElement, inputFieldElement, hintElement)
 
 UserInteraction.prototype.update = function(game)
 {
+	this.scoreCard.update(game);
+
 	var playerName = game.frameSets[game.playerIndex].playerName;
 
 	this.turnElement.innerHTML = playerName + "'s turn";
@@ -54,6 +58,7 @@ UserInteraction.prototype.validateInput = function(input)
 		return;
 	}
 	
+	// TODO: warn about too many pins per throw
 	/*
 	if (validatedInput > _globals.maxPinsPerThrow)
 	{
