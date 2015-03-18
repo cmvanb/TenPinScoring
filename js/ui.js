@@ -1,10 +1,11 @@
-function UserInteraction(tableElement, turnElement, inputElement, hintElement)
+function UserInteraction(tableElement, turnElement, inputElement, hintElement, gameOverElement)
 {
     this.scoreCard = new ScoreCard(tableElement);
 
 	this.turnElement = turnElement;
 	this.inputElement = inputElement;
 	this.hintElement = hintElement;
+	this.gameOverElement = gameOverElement;
 
 	var _this = this;
 
@@ -20,7 +21,7 @@ function UserInteraction(tableElement, turnElement, inputElement, hintElement)
 		// When the enter key is pressed.
 		if (keyCode == "13")
 		{
-			_this.validateInput(this.value);
+			_this.parseInput(this.value);
 
 			this.value = "";
 		}
@@ -31,44 +32,37 @@ UserInteraction.prototype.update = function(game)
 {
 	this.scoreCard.update(game);
 
-	var playerName = game.frameSets[game.playerIndex].playerName;
+	if (game.gameOver)
+	{
+		// Hide unnecessary elements.
+		this.turnElement.style.display = "none";
+		this.inputElement.style.display = "none";
+		this.hintElement.style.display = "none";
 
-	this.turnElement.innerHTML = playerName + "'s turn";
+		// Display game over message.
+		this.gameOverElement.innerHTML = game.getGameOverMessage();
+	}
+	else
+	{
+		var playerName = game.frameSets[game.playerIndex].playerName;
+
+		this.turnElement.innerHTML = playerName + "'s turn";
+	}
 };
 
-UserInteraction.prototype.validateInput = function(input)
+UserInteraction.prototype.parseInput = function(input)
 {
-	var validatedInput = parseInt(input);
+	var parsedInput = parseInt(input);
 
-	if (isNaN(validatedInput))
+	if (isNaN(parsedInput))
 	{
 		this.hintElement.innerHTML = "Please enter a numeric value.";
 		return;
 	}
 
-	if (validatedInput < 0)
-	{
-		this.hintElement.innerHTML = "Please enter a positive number.";
-		return;
-	}
-
-	if (validatedInput > _globals.maxPinsPerThrow)
-	{
-		this.hintElement.innerHTML = "Please enter a number no greater than " + _globals.maxPinsPerThrow + ".";
-		return;
-	}
-	
-	// TODO: warn about too many pins per throw
-	/*
-	if (validatedInput > _globals.maxPinsPerThrow)
-	{
-		this.hintElement.innerHTML = "Please enter a number less than SIGMA.";
-		return;
-	}*/
-
 	this.hintElement.innerHTML = "";
 
-	this.onReceivedValidInput(validatedInput);
+	this.onParsedInput(parsedInput);
 };
 
-UserInteraction.prototype.onReceivedValidInput = null;
+UserInteraction.prototype.onParsedInput = null;

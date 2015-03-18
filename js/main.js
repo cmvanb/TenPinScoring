@@ -6,8 +6,9 @@ function main()
     var turnElement = document.getElementById("turnindicator");
     var inputElement = document.getElementById("inputfield");
     var hintElement = document.getElementById("hint");
+    var gameOverElement = document.getElementById("gameover");
 
-    var userInteraction = new UserInteraction(tableElement, turnElement, inputElement, hintElement);
+    var userInteraction = new UserInteraction(tableElement, turnElement, inputElement, hintElement, gameOverElement);
     var game = new Game();
 
     // Assign callback functions.
@@ -19,9 +20,18 @@ function main()
     { 
         userInteraction.update(game);
     }
-    userInteraction.onReceivedValidInput = function(input)
+    userInteraction.onParsedInput = function(input)
     {
-        game.bowl(input);
+        var errorMessage = game.canBowl(input);
+
+        if (errorMessage == "")
+        {
+            game.bowl(input);
+        }
+        else
+        {
+            hintElement.innerHTML = errorMessage;
+        }
     }
 
     // TODO: allow user to add/remove players
@@ -29,7 +39,6 @@ function main()
     game.addPlayer("Calvin");
     game.addPlayer("Hobbes");
 
-    /*
     var perfectGameData = [
         10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
@@ -40,7 +49,13 @@ function main()
         6, 4, 2, 3, 10, 10, 10, 10, 10, 2, 
         1, 10, 3, 6, 4, 3, 7, 3, 1, 3, 7, 2];
 
-    autoplayInterval(game, sampleGameData);
+    var sampleGameData2 = [
+        0, 0, 10, 0, 0, 10, 0, 0, 10, 0, 0, 10, 0, 0, 10,
+        0, 0, 10, 0, 0, 10, 0, 0, 10, 0, 0, 10, 0, 0, 10,
+        10, 10];
+
+    autoplayInterval(game, perfectGameData);
+    /*
     */
 };
 

@@ -7,16 +7,6 @@ function Frame(isLastFrame)
     this.completed = false;
 };
 
-Frame.prototype.getLastThrow = function()
-{
-    if (this.throws.length == 0)
-    {
-        return null;
-    }
-
-    return this.throws[this.throws.length - 1];
-};
-
 Frame.prototype.addThrow = function(pins)
 {
     if (this.usedMaxThrows())
@@ -90,6 +80,36 @@ Frame.prototype.calculateScore = function()
     this.score = scoreBase + scoreBonus;
 
     return this.score;
+};
+
+Frame.prototype.getPinsLeft = function()
+{
+    if (this.throws.length == 0)
+    {
+        return _globals.maxPinsPerThrow;
+    }
+
+    var lastThrow = this.getLastThrow();
+
+    // All pins were knocked down, they are replaced by now.
+    if (lastThrow.isStrike
+        || lastThrow.isSpare)
+    {
+        return _globals.maxPinsPerThrow;
+    }
+
+    // Otherwise return the maximum minus the pins knocked down last throw.
+    return _globals.maxPinsPerThrow - lastThrow.pins;
+};
+
+Frame.prototype.getLastThrow = function()
+{
+    if (this.throws.length == 0)
+    {
+        return null;
+    }
+
+    return this.throws[this.throws.length - 1];
 };
 
 Frame.prototype.usedMaxThrows = function()
