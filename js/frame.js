@@ -163,8 +163,12 @@ Frame.prototype.throwIsStrike = function(pins)
 
 Frame.prototype.throwIsSpare = function(pins)
 {
+    var lastThrow = this.getLastThrow()
+
     if (this.throws.length > 0
-        && this.getLastThrow().pins + pins == _globals.maxPinsPerThrow)
+        && !lastThrow.isStrike
+        && !lastThrow.isSpare
+        && lastThrow.pins + pins == _globals.maxPinsPerThrow)
     {
         return true;
     }
